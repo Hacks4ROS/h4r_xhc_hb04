@@ -28,14 +28,15 @@
 #include <assert.h>
 #include <signal.h>
 #include <string.h>
-#include <libusb.h>
+//#include <libusb.h>
 #include <unistd.h>
 #include <stdarg.h>
 
-#include <hal.h>
-#include <inifile.hh>
+#include "hal_replace.h"
+//#include <hal.h>
+//#include <inifile.hh>
 
-#include "config.h"
+//#include "config.h"
 
 const char *modname = "xhc-hb04";
 int hal_comp_id;
@@ -177,13 +178,13 @@ struct libusb_transfer *transfer_in  = NULL;
 unsigned char in_buf[32];
 void setup_asynch_transfer(libusb_device_handle *dev_handle);
 
-extern "C" const char *
-iniFind(FILE *fp, const char *tag, const char *section)
-{
-    IniFile                     f(false, fp);
-
-    return(f.Find(tag, section));
-}
+//jextern "C" const char *
+//iniFind(FILE *fp, const char *tag, const char *section)
+//{
+//    IniFile                     f(false, fp);
+//
+//    return(f.Find(tag, section));
+//}
 
 void init_xhc(xhc_t *xhc)
 {
@@ -518,6 +519,7 @@ static void quit(int sig)
 	do_exit = 1;
 }
 
+/*
 static int hal_pin_simu(char *pin_name, void **ptr, int s)
 {
 	printf("Creating pin: %s\n", pin_name);
@@ -883,3 +885,4 @@ int main (int argc,char **argv)
 		libusb_exit(ctx);
 	}
 }
+*/

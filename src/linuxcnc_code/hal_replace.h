@@ -6,6 +6,9 @@
 #define HAL_H_
 #include <libusb-1.0/libusb.h>
 #include <inttypes.h>
+
+
+//Linux CNC unit definitions:
 typedef int8_t rtapi_s8;
 typedef int16_t rtapi_s16;
 typedef int32_t rtapi_s32;
@@ -32,6 +35,9 @@ int hal_ready(int)
 {
 	return 0;
 }
+
+//Functions in xhc-hb04.cc
+
 
 
 
