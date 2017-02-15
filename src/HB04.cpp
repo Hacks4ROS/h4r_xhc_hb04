@@ -14,7 +14,7 @@ namespace h4r_xhc_hb04
 #define CHANNEL_REGISTER(NO,CHAN)\
 case NO:\
 	chan=Channel::CHAN;\
-	topic_name+=#CHAN;\
+	topic_name=#CHAN;\
 	break
 
 #define CHANNEL_SET_LCD(CHAN)\
@@ -29,6 +29,7 @@ HB04::HB04()
 :n_()
 ,nh_("~")
 ,rate_(10)
+,abs_pos_ {0}
 {
   nh_.getParam("rate",rate_);
 
@@ -38,7 +39,7 @@ HB04::HB04()
 	  {
 
 		  Channel chan;
-		  std::string topic_name="pos_";
+		  std::string topic_name;
 		  switch(c)
 		  {
 			  CHANNEL_REGISTER(0,x_mc);
@@ -54,7 +55,7 @@ HB04::HB04()
 			  CHANNEL_REGISTER(10,spindle_rps);
 			  CHANNEL_REGISTER(11,spindle_override);
 		  }
-		  sub_[c]=nh_.subscribe<std_msgs::Float64>(topic_name,1,bind(&HB04::displayCallback, this, _1,chan));
+		  sub_[c]=nh_.subscribe<std_msgs::Float64>("pos_"+topic_name,1,bind(&HB04::displayCallback, this, _1,chan));
 
 	  }
 
@@ -64,7 +65,7 @@ HB04::HB04()
 	  {
 
 		  Channel chan;
-		  std::string topic_name="delta_";
+		  std::string topic_name;
 		  switch(c)
 		  {
 			  CHANNEL_REGISTER(0,x_mc);
@@ -74,7 +75,8 @@ HB04::HB04()
 			  CHANNEL_REGISTER(4,feedrate_override);
 			  CHANNEL_REGISTER(5,spindle_override);
 		  }
-		  pub_delta_[c]=nh_.advertise<std_msgs::Float64>(topic_name,1);
+		  pub_delta_[c]=nh_.advertise<std_msgs::Float64>("delta"+topic_name,1);
+		  pub_absolute_[c]=nh_.advertise<std_msgs::Float64>("abs_"+topic_name,1);
 	  }
 
 }
@@ -222,7 +224,7 @@ int HB04::run()
 
 
 
-				//if (simu_mode) linuxcnc_simu(&xhc);
+				if (simu_mode) linuxcnc_simu(&xhc);
 
 
 

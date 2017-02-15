@@ -37,7 +37,11 @@ private:
 	ros::NodeHandle n_;
 	ros::NodeHandle nh_;
 
+	double abs_pos_[6];
+
 	ros::Publisher pub_delta_[6];
+	ros::Publisher pub_absolute_[6];
+
 	ros::Subscriber sub_[12];
 	double rate_;
 
@@ -45,6 +49,15 @@ private:
 
 
 	hal_s32_t last_jog_counts_;
+
+#define CNT_DELTA_AXIS(NUM)\
+{\
+	pub_delta_[NUM].publish(msg_delta);\
+	abs_pos_[NUM]+=delta;\
+	msg_abs.data=abs_pos_[NUM];\
+	pub_absolute_[NUM].publish(msg_abs);\
+}
+
 	void countDelta()
 	{
 
@@ -54,41 +67,17 @@ private:
 			float delta = delta_int * hal_data_.data.jog_scale;
 			last_jog_counts_=hal_data_.data.jog_counts;
 
-
-
 			std_msgs::Float64 msg_delta;
+			std_msgs::Float64 msg_abs;
+
 			msg_delta.data=delta;
 
-			if (hal_data_.data.jog_enable_x)
-			{
-				pub_delta_[0].publish(msg_delta);
-			}
-
-			if (hal_data_.data.jog_enable_y)
-			{
-				pub_delta_[1].publish(msg_delta);
-			}
-
-			if (hal_data_.data.jog_enable_z)
-			{
-				pub_delta_[2].publish(msg_delta);
-			}
-
-			if (hal_data_.data.jog_enable_a)
-			{
-				pub_delta_[3].publish(msg_delta);
-			}
-
-			if (hal_data_.data.jog_enable_spindle)
-			{
-				pub_delta_[4].publish(msg_delta);
-			}
-
-
-			if (hal_data_.data.jog_enable_feedrate)
-			{
-				pub_delta_[5].publish(msg_delta);
-			}
+			if (hal_data_.data.jog_enable_x)CNT_DELTA_AXIS(0)
+			if (hal_data_.data.jog_enable_y)CNT_DELTA_AXIS(1)
+			if (hal_data_.data.jog_enable_z)CNT_DELTA_AXIS(2)
+			if (hal_data_.data.jog_enable_a)CNT_DELTA_AXIS(3)
+			if (hal_data_.data.jog_enable_spindle)CNT_DELTA_AXIS(4)
+			if (hal_data_.data.jog_enable_feedrate)CNT_DELTA_AXIS(5)
 
 		}
 
