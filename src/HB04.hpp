@@ -12,6 +12,10 @@
 #define HB04_HPP_
 
 #include <ros/ros.h>
+#include <std_msgs/Float64.h>
+#include <inttypes.h>
+#include "linuxcnc_code/hal_replace.h"
+
 
 namespace h4r_xhc_hb04
 {
@@ -22,10 +26,23 @@ namespace h4r_xhc_hb04
  */
 class HB04
 {
+
+
+
 private:
+	XhcHalAdapter hal_data_;
+
 	ros::NodeHandle n_;
 	ros::NodeHandle nh_;
+
+	ros::Publisher pub_[10];
+	ros::Subscriber sub_[10];
 	double rate_;
+
+	void displayCallback(const std_msgs::Float64::ConstPtr &msg,Channel channel );
+
+
+
 
 public:
 	HB04();

@@ -32,7 +32,6 @@
 #include <unistd.h>
 #include <stdarg.h>
 
-#include "hal_replace.h"
 //#include <hal.h>
 //#include <inifile.hh>
 
@@ -41,7 +40,7 @@
 const char *modname = "xhc-hb04";
 int hal_comp_id;
 const char *section = "XHC-HB04";
-bool simu_mode = true;
+bool simu_mode = false;
 
 typedef struct {
 	char pin_name[256];
@@ -58,7 +57,7 @@ typedef enum {
 	axis_feed = 0x15
 } xhc_axis_t;
 
-#define NB_MAX_BUTTONS 32
+//#define NB_MAX_BUTTONS 32
 
 #define STEPSIZE_BYTE 35
 #define FLAGS_BYTE    36
@@ -101,51 +100,51 @@ static int stepsize_idx = 0; // start at initial (zeroth) sequence
 static int stepsize_last_idx  =  0; //calculated`
 
 
-typedef struct {
-	hal_float_t *x_wc, *y_wc, *z_wc, *a_wc;
-	hal_float_t *x_mc, *y_mc, *z_mc, *a_mc;
-
-	hal_float_t *feedrate_override, *feedrate;
-	hal_float_t *spindle_override, *spindle_rps;
-
-	hal_bit_t *button_pin[NB_MAX_BUTTONS];
-
-    hal_bit_t *jog_enable_off;
-	hal_bit_t *jog_enable_x;
-	hal_bit_t *jog_enable_y;
-	hal_bit_t *jog_enable_z;
-	hal_bit_t *jog_enable_a;
-	hal_bit_t *jog_enable_feedrate;
-	hal_bit_t *jog_enable_spindle;
-	hal_float_t *jog_scale;
-	hal_s32_t *jog_counts, *jog_counts_neg;
-
-	hal_float_t *jog_velocity;
-	hal_float_t *jog_max_velocity;
-	hal_float_t *jog_increment;
-	hal_bit_t *jog_plus_x, *jog_plus_y, *jog_plus_z, *jog_plus_a;
-	hal_bit_t *jog_minus_x, *jog_minus_y, *jog_minus_z, *jog_minus_a;
-
-	hal_bit_t *stepsize_up;
-	hal_bit_t *stepsize_down;
-	hal_s32_t *stepsize;
-	hal_bit_t *sleeping;
-	hal_bit_t *connected;
-	hal_bit_t *require_pendant;
-	hal_bit_t *inch_icon;
-	hal_bit_t *zero_x;
-	hal_bit_t *zero_y;
-	hal_bit_t *zero_z;
-	hal_bit_t *zero_a;
-	hal_bit_t *gotozero_x;
-	hal_bit_t *gotozero_y;
-	hal_bit_t *gotozero_z;
-	hal_bit_t *gotozero_a;
-	hal_bit_t *half_x;
-	hal_bit_t *half_y;
-	hal_bit_t *half_z;
-	hal_bit_t *half_a;
-} xhc_hal_t;
+//typedef struct {
+//	hal_float_t *x_wc, *y_wc, *z_wc, *a_wc;
+//	hal_float_t *x_mc, *y_mc, *z_mc, *a_mc;
+//
+//	hal_float_t *feedrate_override, *feedrate;
+//	hal_float_t *spindle_override, *spindle_rps;
+//
+//	hal_bit_t *button_pin[NB_MAX_BUTTONS];
+//
+//    hal_bit_t *jog_enable_off;
+//	hal_bit_t *jog_enable_x;
+//	hal_bit_t *jog_enable_y;
+//	hal_bit_t *jog_enable_z;
+//	hal_bit_t *jog_enable_a;
+//	hal_bit_t *jog_enable_feedrate;
+//	hal_bit_t *jog_enable_spindle;
+//	hal_float_t *jog_scale;
+//	hal_s32_t *jog_counts, *jog_counts_neg;
+//
+//	hal_float_t *jog_velocity;
+//	hal_float_t *jog_max_velocity;
+//	hal_float_t *jog_increment;
+//	hal_bit_t *jog_plus_x, *jog_plus_y, *jog_plus_z, *jog_plus_a;
+//	hal_bit_t *jog_minus_x, *jog_minus_y, *jog_minus_z, *jog_minus_a;
+//
+//	hal_bit_t *stepsize_up;
+//	hal_bit_t *stepsize_down;
+//	hal_s32_t *stepsize;
+//	hal_bit_t *sleeping;
+//	hal_bit_t *connected;
+//	hal_bit_t *require_pendant;
+//	hal_bit_t *inch_icon;
+//	hal_bit_t *zero_x;
+//	hal_bit_t *zero_y;
+//	hal_bit_t *zero_z;
+//	hal_bit_t *zero_a;
+//	hal_bit_t *gotozero_x;
+//	hal_bit_t *gotozero_y;
+//	hal_bit_t *gotozero_z;
+//	hal_bit_t *gotozero_a;
+//	hal_bit_t *half_x;
+//	hal_bit_t *half_y;
+//	hal_bit_t *half_z;
+//	hal_bit_t *half_a;
+//} xhc_hal_t;
 
 #define STEP_UNDEFINED  -1
 #define STEP_NONE      0x0
@@ -224,6 +223,8 @@ void xhc_display_encode(xhc_t *xhc, unsigned char *data, int len)
 	*p++ = 0xFE;
 	*p++ = 0xFD;
 	*p++ = 0x0C;
+
+
 
 	if (xhc->axis == axis_a) p += xhc_encode_float(round(1000 * *(xhc->hal->a_wc)) / 1000, p);
 	else p += xhc_encode_float(round(1000 * *(xhc->hal->x_wc)) / 1000, p);

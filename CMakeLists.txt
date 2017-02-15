@@ -13,7 +13,7 @@ endif(LIBUSB_FOUND)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  sensor_msgs
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -73,7 +73,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   sensor_msgs
+#   std_msgs
 # )
 
 ################################################
@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES h4r_xhc_hb04
-  CATKIN_DEPENDS  roscpp sensor_msgs
+  CATKIN_DEPENDS  roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -122,6 +122,7 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+add_definitions(-std=c++11)
 
 ## Declare a C++ library
 # add_library(h4r_xhc_hb04
