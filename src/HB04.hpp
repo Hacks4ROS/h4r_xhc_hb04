@@ -13,6 +13,8 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/UInt8.h>
+
 #include <inttypes.h>
 #include "linuxcnc_code/hal_replace.h"
 
@@ -35,12 +37,62 @@ private:
 	ros::NodeHandle n_;
 	ros::NodeHandle nh_;
 
-	ros::Publisher pub_[10];
+	ros::Publisher pub_delta_[6];
 	ros::Subscriber sub_[12];
 	double rate_;
 
 	void displayCallback(const std_msgs::Float64::ConstPtr &msg,Channel channel );
 
+
+	hal_s32_t last_jog_counts_;
+	void countDelta()
+	{
+
+		if (hal_data_.data.jog_counts != last_jog_counts_)
+		{
+			int delta_int = hal_data_.data.jog_counts - last_jog_counts_;
+			float delta = delta_int * hal_data_.data.jog_scale;
+			last_jog_counts_=hal_data_.data.jog_counts;
+
+
+
+			std_msgs::Float64 msg_delta;
+			msg_delta.data=delta;
+
+			if (hal_data_.data.jog_enable_x)
+			{
+				pub_delta_[0].publish(msg_delta);
+			}
+
+			if (hal_data_.data.jog_enable_y)
+			{
+				pub_delta_[1].publish(msg_delta);
+			}
+
+			if (hal_data_.data.jog_enable_z)
+			{
+				pub_delta_[2].publish(msg_delta);
+			}
+
+			if (hal_data_.data.jog_enable_a)
+			{
+				pub_delta_[3].publish(msg_delta);
+			}
+
+			if (hal_data_.data.jog_enable_spindle)
+			{
+				pub_delta_[4].publish(msg_delta);
+			}
+
+
+			if (hal_data_.data.jog_enable_feedrate)
+			{
+				pub_delta_[5].publish(msg_delta);
+			}
+
+		}
+
+	}
 
 
 
