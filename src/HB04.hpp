@@ -36,7 +36,7 @@ private:
 	ros::NodeHandle nh_;
 
 	ros::Publisher pub_[10];
-	ros::Subscriber sub_[10];
+	ros::Subscriber sub_[12];
 	double rate_;
 
 	void displayCallback(const std_msgs::Float64::ConstPtr &msg,Channel channel );

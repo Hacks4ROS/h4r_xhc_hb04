@@ -34,7 +34,7 @@ HB04::HB04()
 
 
 
-	  for (int c = 0; c < 10; ++c)
+	  for (int c = 0; c < 12; ++c)
 	  {
 
 		  Channel chan;
