@@ -75,7 +75,7 @@ HB04::HB04()
 			  CHANNEL_REGISTER(4,feedrate_override);
 			  CHANNEL_REGISTER(5,spindle_override);
 		  }
-		  pub_delta_[c]=nh_.advertise<std_msgs::Float64>("delta"+topic_name,1);
+		  pub_delta_[c]=nh_.advertise<std_msgs::Float64>("delta_"+topic_name,1);
 		  pub_absolute_[c]=nh_.advertise<std_msgs::Float64>("abs_"+topic_name,1);
 	  }
 
