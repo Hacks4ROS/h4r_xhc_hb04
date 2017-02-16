@@ -1,0 +1,11 @@
+<launch>
+	
+	<node name="HB04" type="xhc_hb04_node" pkg="h4r_xhc_hb04" >
+		<remap from="~/abs_x_mc" to="/joint_rail/command" />	
+		<remap from="~/abs_y_mc" to="/joint_boom/command" />	
+		<remap from="~/abs_z_mc" to="/joint_vertical/command" />			
+	</node>
+	
+	<include file="$(find h4r_rapid_robot_xacros)/launch/gantry_bot.launch" />
+			
+</launch>
